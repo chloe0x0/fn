@@ -133,7 +133,9 @@ class Fn(nn.Module):
 
         print(f"Testing loss: {test_loss:.5f}")
     
-    def fit(self, X, function: callable, epochs: int = 200):
+    def fit(self, X: np.array, function: callable, epochs: int = 200):
+        ''' Fits the model to a function given a domain (np array), and a function (callable)
+        '''
         dataset = generate_dataset(function, X)
         loader = DataLoader(dataset=dataset, batch_size=1, shuffle=True)
 
@@ -144,10 +146,14 @@ class Fn(nn.Module):
 
 if __name__ == "__main__":
     from math import pi
-    f = np.sin
+    
+    @np.vectorize
+    def f(x):
+        return np.sin(x)
+
     X = np.arange(0, 2*pi + 1, 0.25)
 
-    model = Fn(sizes=[1, 500_000, 1], activations=['tanh'], loss='l2')
+    model = Fn(sizes=[1, 1096, 1096, 1], activations=['tanh', 'tanh', 'tanh'], loss='l2')
     model.fit(X, f, epochs=500)
 
     y = model(0.0).item()
@@ -156,7 +162,8 @@ if __name__ == "__main__":
     @np.vectorize
     def model_(x):
         return model(torch.Tensor([x]).to(model.device)).detach().cpu()
-    
+
+    X = np.arange(-1, 3*pi / 2, 0.01)
     y = model_(X)
     plt.plot(X, y)
     plt.plot(X, f(X))

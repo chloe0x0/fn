@@ -51,6 +51,32 @@ y = model(0.0).item()
 print(y)
 ```
 
+## Visualizing model architecture
+The Fn object's __str__ method uses the torchsummary library to return a Keras-like summary of the model
+
+```python
+model = Fn(sizes=[1, 1096, 1096, 1], activations=['tanh', 'tanh', 'tanh'], loss='l2')
+print(model) 
+```
+```console
+>>> 
+=================================================================
+Layer (type:depth-idx)                   Param #
+=================================================================
+├─Linear: 1-1                            2,192
+├─Tanh: 1-2                              --
+├─Linear: 1-3                            1,202,312
+├─Tanh: 1-4                              --
+├─Linear: 1-5                            1,097
+├─Tanh: 1-6                              --
+=================================================================
+Total params: 1,205,601
+Trainable params: 1,205,601
+Non-trainable params: 0
+=================================================================
+```
+
+
 # Theory
 The Universal Approximation Theorem states that a neural network with a single hidden layer can approximate any continious function on a closed interval to arbitrary error
 
