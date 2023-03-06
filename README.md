@@ -8,7 +8,7 @@ Even boolean functions! (build a small CPU with neural networks as the logical g
 This is currently intended to function like sklearn's MLPRegressor object.
 
 
-## Example, learning sin(x)
+## Example, learning sin(x) on [-5, 5)
 ```python
 import numpy as np
 from fn import Fn
@@ -32,9 +32,24 @@ the model will look like
 
 ![](imgs/Figure_1.png)
 
-## Goal
-Construct a framework where a user can input a function, and a neural network is automatically created to learn the function.
-The goal is ultimatley to use as few neurons and hidden layers as possible
+A trained model can easily be used as a function
+
+```python
+from math import pi
+import numpy as np
+from fn import Fn
+
+f = np.sin
+X = np.arange(0, 2*pi + 1, 0.25)
+
+model = Fn(sizes=[1, 1096, 1096, 1096, 1], activations=['tanh', 'tanh', 'tanh'], loss='l1', optimizer="adam")
+# Fit the model on sin(x) over the interval [0, 2pi]
+model.fit(X, f, epochs=250)
+
+# using our model to compute sin(0)
+y = model(0.0).item()
+print(y)
+```
 
 # Theory
 The Universal Approximation Theorem states that a neural network with a single hidden layer to approximate any continious function on a closed interval to arbitrary error

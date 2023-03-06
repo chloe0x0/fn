@@ -57,6 +57,8 @@ class Fn(nn.Module):
         for i in range(len(sizes)-1):
             in_, out = sizes[i:i+2]
             activation = activations[i]
+            if activation:
+                activation = activation.lower()
             self.model.append(nn.Linear(in_, out))
 
             activation_function = None
@@ -93,6 +95,10 @@ class Fn(nn.Module):
 
     def forward(self, x: torch.TensorType):
         ''' A single forward pass through the network '''
+        if not isinstance(x, torch.Tensor):
+            x = torch.Tensor([x])
+        if x.device != self.device:
+            x = x.to(self.device)
         return self.model(x)
 
     def __str__(self) -> str:
@@ -137,19 +143,12 @@ class Fn(nn.Module):
             self.test(loader)
 
 if __name__ == "__main__":
+    from math import pi
     f = np.sin
+    X = np.arange(0, 2*pi + 1, 0.25)
 
-    X = np.arange(-5, 5, 0.25)
+    model = Fn(sizes=[1, 1096, 1096, 1096, 1], activations=['tanh', 'tanh', 'tanh'], loss='l2')
+    model.fit(X, f, epochs=250)
 
-    model = Fn(sizes=[1, 1096, 1096, 1096, 1], activations=['tanh', 'tanh', 'tanh'], loss='l1', optimizer="adam")
-    model.fit(X, f, epochs=750)
-
-    @np.vectorize
-    def model_(x):
-        return model(torch.Tensor([x]).to(model.device)).detach().cpu()
-    
-    y = model_(X)
-    plt.plot(X, y)
-    plt.plot(X, f(X))
-
-    plt.show()
+    y = model(0.0).item()
+    print(y)
