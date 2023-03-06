@@ -60,6 +60,9 @@ An extreme example,
 
 ```python
 from math import pi
+import numpy as np
+from fn import Fn
+
 f = np.sin
 X = np.arange(0, 2*pi + 1, 0.25)
 
