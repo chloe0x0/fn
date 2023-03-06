@@ -147,8 +147,18 @@ if __name__ == "__main__":
     f = np.sin
     X = np.arange(0, 2*pi + 1, 0.25)
 
-    model = Fn(sizes=[1, 1096, 1096, 1096, 1], activations=['tanh', 'tanh', 'tanh'], loss='l2')
-    model.fit(X, f, epochs=250)
+    model = Fn(sizes=[1, 500_000, 1], activations=['tanh'], loss='l2')
+    model.fit(X, f, epochs=500)
 
     y = model(0.0).item()
     print(y)
+
+    @np.vectorize
+    def model_(x):
+        return model(torch.Tensor([x]).to(model.device)).detach().cpu()
+    
+    y = model_(X)
+    plt.plot(X, y)
+    plt.plot(X, f(X))
+
+    plt.show()

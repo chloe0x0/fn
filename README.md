@@ -52,4 +52,32 @@ print(y)
 ```
 
 # Theory
-The Universal Approximation Theorem states that a neural network with a single hidden layer to approximate any continious function on a closed interval to arbitrary error
+The Universal Approximation Theorem states that a neural network with a single hidden layer can approximate any continious function on a closed interval to arbitrary error
+
+An extreme example,
+
+## Learning sin(x) on [0, 2π] with a single hidden layer (500k neurons)
+
+```python
+from math import pi
+f = np.sin
+X = np.arange(0, 2*pi + 1, 0.25)
+
+model = Fn(sizes=[1, 500_000, 1], activations=['tanh'], loss='l2')
+model.fit(X, f, epochs=500)
+
+@np.vectorize
+def model_(x):
+    return model(torch.Tensor([x]).to(model.device)).detach().cpu()
+
+y = model_(X)
+
+plt.plot(X, y)
+plt.plot(X, f(X))
+
+plt.show()
+```
+
+![](imgs/Figure2.png)
+
+not bad for 1 hidden layer.
