@@ -29,6 +29,7 @@ plt.plot(X, f(X))
 plt.show()
 ```
 the model will look like
+
 ![](imgs/Figure_1.png)
 
 ## Goal
