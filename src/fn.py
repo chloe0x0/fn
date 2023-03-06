@@ -137,11 +137,7 @@ class Fn(nn.Module):
             self.test(loader)
 
 if __name__ == "__main__":
-    from math import sin, cos
-
-    @np.vectorize
-    def f(x):
-        return x
+    f = np.sin
 
     X = np.arange(-5, 5, 0.25)
 
